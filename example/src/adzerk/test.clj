@@ -5,7 +5,7 @@
 (defn handle-event
   [event]
   (println "Got the following event: " (pr-str event))
-  {:status "testing123"})
+  {:status "ok"})
 
 (defn handler
   [in out ctx]

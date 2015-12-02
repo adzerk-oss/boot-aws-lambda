@@ -7,5 +7,5 @@
 (deftask build
   []
   (comp (uber)
-        (jar :file "lambda-project.jar")
-        (sift :include #{#"^lambda-project.jar"})))
+        (jar :file "lambda-function.jar")
+        (sift :include #{#"^lambda-function.jar"})))
