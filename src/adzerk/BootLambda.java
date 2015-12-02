@@ -13,31 +13,30 @@ import java.util.Properties;
 
 public class BootLambda implements RequestStreamHandler {
 
-  public String PROPERTY_FILE_NAME = "/adzerk.lambda.properties";
-  public String HANDLER_PROP_NAME = "handler-var";
+  public final String PROPERTY_FILE_NAME = "/adzerk.lambda.properties";
+  public final String HANDLER_PROP_NAME  = "handler-var";
 
-  public IFn require   = Clojure.var("clojure.core", "require");
-  public IFn namespace = Clojure.var("clojure.core", "namespace");
-  public IFn name      = Clojure.var("clojure.core", "name");
+  public IFn require      = Clojure.var("clojure.core", "require");
+  public IFn namespace    = Clojure.var("clojure.core", "namespace");
+  public IFn name         = Clojure.var("clojure.core", "name");
+  public Properties props = new Properties();
 
   public Symbol sym;
   public String symNs;
   public String symName;
-
-  public Properties props = new Properties();
-
   public IFn handler;
 
   public BootLambda() throws Exception {
-    try (final InputStream stream = BootLambda.class.getResourceAsStream(PROPERTY_FILE_NAME)) {
+    try (final InputStream stream = this.getClass().getResourceAsStream(PROPERTY_FILE_NAME)) {
       props.load(stream);
     } catch (Exception e) {
       System.err.println("Error loading "+PROPERTY_FILE_NAME);
       throw e;
     }
-    sym     = (Symbol)Clojure.read(props.getProperty(HANDLER_PROP_NAME));
-    symNs   = (String)namespace.invoke(sym);
-    symName = (String)name.invoke(sym);
+    sym       = (Symbol)Clojure.read(props.getProperty(HANDLER_PROP_NAME));
+    symNs     = (String)namespace.invoke(sym);
+    symName   = (String)name.invoke(sym);
+
     require.invoke(Clojure.read(symNs));
     handler = Clojure.var(symNs, symName);
   }
